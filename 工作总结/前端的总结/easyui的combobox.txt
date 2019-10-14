@@ -1,0 +1,1 @@
+1、$('#com').combobox('getValue')获取当前选中的值 $('#com').combobox('getText')获取当前选中的文字
