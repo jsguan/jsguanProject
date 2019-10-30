@@ -1,0 +1,4 @@
+1.Cannot add or update a child row: a foreign key constraint fails (`SOPPLUS`.`T_ORGUSER`, CONSTRAINT `FK_T_ORGUSER2` FOREIGN KEY (`UserId`) REFERENCES `T_USER` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE)
+	CopyIdsOrgUserTarDataHandler.createOrgUserRelations
+问题解决方案：插入关系表或更新时出错，查找源库中哪些人员或机构不存在 利用sql的not in查询然后删除或者将源库重新推送正确的数据
+forExample:SELECT DWRY.DLM FROM T_RYZX_DW_RY DWRY WHERE DWRY.DLM NOT IN (SELECT TY.DLM FROM T_RYZX_RY RY)查询缺失的人员

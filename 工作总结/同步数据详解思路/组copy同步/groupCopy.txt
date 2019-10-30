@@ -1,0 +1,4 @@
+													组同步思路，先同步组，再同步组成员
+1。组同步
+加载源数据与目标数据 以Map<id,Object>的形式。同步id的比较，得出目标数据的addList.delList.updateList
+addList思路：map.keySet得出id的set集合
