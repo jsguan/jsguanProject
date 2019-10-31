@@ -25,3 +25,16 @@ mysql -u username -p -D mydatabase(哪个数据库) < mydata_mytable.sql
 进入redis的docker容器 docker exec -it docker的id /bin/bash
 连接redis  redis-cli -a 12344(密码)
 清除缓存:flushall
+
+
+5.//日志文件过大
+https://blog.csdn.net/u011487593/article/details/52287991/
+1、查看最后1000行的数据
+cat filename | tail -n 1000
+2、查看1000到3000行的数据
+cat filename | head -n 3000 | tail -n +1000
+
+3、复制最后2000行到文件
+tail -20000 catalina.out >testlog.txt
+
+head -10000 testlog.txt >testlog1.txt
