@@ -2,3 +2,12 @@
 	CopyIdsOrgUserTarDataHandler.createOrgUserRelations
 问题解决方案：插入关系表或更新时出错，查找源库中哪些人员或机构不存在 利用sql的not in查询然后删除或者将源库重新推送正确的数据
 forExample:SELECT DWRY.DLM FROM T_RYZX_DW_RY DWRY WHERE DWRY.DLM NOT IN (SELECT TY.DLM FROM T_RYZX_RY RY)查询缺失的人员
+
+2.com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`SOPPLUS`.`T_ORG`, CONSTRAINT `FK4CC1859CBB90CEB` FOREIGN KEY (`ParentId`) REFERENCES `T_ORG` (`Id`))
+    at com.sudytech.ids.sync.impl.orguser.CopyIdsOrgUserTarDataHandler.updateOrgs(CopyIdsOrgUserTarDataHandler.java:315)
+更新最新的拷贝jar包即可解决
+
+3.java.lang.NullPointerException
+	at com.sudytech.ids.sync.impl.orguser.CopyOrgUserDataLoader.loadUsers(CopyOrgUserDataLoader.java:73)
+	方案：数据库连接异常导致查询失败，空指针异常
+：
