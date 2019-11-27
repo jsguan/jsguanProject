@@ -1,0 +1,127 @@
+--------------------镜像制作步骤------------------------------
+1
+//删除虚拟机
+docker stack rm sudy_mids
+	//查看容器		常用容器命令https://blog.csdn.net/wangmx1993328/article/details/81735070
+	docker ps -a
+	//停止容器
+	docker stop 容器id
+	//删除容器
+	docker rm 容器id
+
+	//查询所有制作好的镜像
+	docker images
+//删除镜像(通常不需要)
+docker rmi 镜像ID
+
+//日志,sql数据删除
+/*
+//251日志删除
+rm -rf /opt/sudytech/mids_default/data/backup/*
+rm -rf /opt/sudytech/mids_default/data2/backup/*
+rm -rf /opt/sudytech/mids_default/data/logs/mids/*		
+rm -rf /opt/sudytech/mids_default/data/logs/tomcat-logs/*
+rm -rf /opt/sudytech/mids_default/data2/logs/mids/*
+rm -rf /opt/sudytech/mids_default/data2/logs/tomcat-logs/*
+//252mysql/data删除
+rm -rf /opt/sudytech/mids_default/mysql/data/*
+rm -rf /opt/sudytech/mids_default/data/mysql/dump/*
+*/
+
+2
+//修改节点
+//修改标签
+//修改文件
+//检查权限
+
+3
+//上传,删除文件,注意文件数量,注意权限
+//本地上传
+压缩zip
+unzip *.zip
+//拷贝到252
+251压缩,远程拷贝
+cd /opt/sudytech
+tar -czvf 名称.tar.gz 要打包文件夹名/ --exclude 要打包文件夹名/文件夹 --exclude 要打包文件夹名/文件
+scp 名称.tar.gz root@172.20.10.252:/opt/sudytech/		testmail(这里是掩码),非22: -P 端口
+252解压
+rm -rf /opt/sudytech/mids_default/		
+cd /opt/sudytech
+tar -xzvf 名称.tar.gz
+
+
+4
+//建立镜像,注意空格和点
+cd /opt/sudytech/mids_default
+	//V3.0.0B1		3.0版本 .0需求版本 B1第一轮测试,名称与dockfile一致,生成为了提交仓库,提交后可删除
+docker build -f source/Dockerfile  -t registry.sudytech.com:35000/midsplus-b/mids:V3.0.0B1 .
+	//拷贝一份,通过已生成+dockfile+命令,这一份也是将要操作的
+./mids build
+
+	//建立容器
+./mids deploy sudy_mids
+	//查看日志
+tail -f /opt/sudytech/mids_default/data/logs/tomcat-logs/catalina.out
+
+
+--------------------测试------------------------------
+1//重启tomcat
+//修改后通过共享目录拷贝到tomcat测试,注意集群先停掉一个容器的tomcat
+docker ps
+docker exec -it 容器的ID /bin/bash
+ps -Af|grep java
+kill -9 进程id													exit;退出容器
+													
+cd /opt/sudytech/tomcat8/logs/		路径通过docker-compose.yml找,拷贝文件需到奇父目录下
+cp 		文件名    路径
+cp -r   文件夹/   路径              /连同文件夹,/ *则只拷贝其子文件
+
+
+/opt/sudytech/tomcat8/bin/startup.sh
+tail -f /opt/sudytech/tomcat8/logs/catalina.out	
+
+//重启服务
+172.20.10.251:9000
+
+//重启容器
+docker stack rm sudy_imp
+./imp deploy sudy_imp
+
+2
+//查看tomcat日志进程,查看有无启动报错
+tail -f /opt/sudytech/mids_default/data/logs/tomcat-logs/catalina.out
+//查看容器启动状况
+172.20.10.251:9000
+//查看容器日志
+docker ps -a
+docker logs 容器id
+//查看容器中文件
+
+3
+//页面登录测试
+http://172.20.10.251:8064/login.jsp?inner=1		admin/admin123
+
+4
+//数据库表查询
+docker ps
+docker exec -it mysql的容器Id /bin/bash
+mysql -uroot -pSudy.web123
+show databases;		use 库名;	show tables;	desc 表名;
+select * from 表名;
+
+5
+//问题排查
+//节点
+mysql 主机找不到
+//标签
+ClassNotFoundException: ${database.driver}
+
+//可能间接原因
+内存,
+端口
+data,表修改产生的数据
+//重启Nginx
+docker stack ls
+cd /opt/sudytech/nginx_default/
+docker stack rm sudy_nginx;
+./nginx deploy nginx_default

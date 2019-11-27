@@ -1,0 +1,178 @@
+--------------------节点修改-----------------------------------------------------	
+1节点名
+Dockerfile
+mids						节点名,版本号			
+2文件,路径名
+docker-compose.yml			路径对应,文件外挂,端口
+mids						修改文件名称
+logs/mids					修改文件夹名称
+3swarm配置
+172.20.10.251:9000
+服务器1	应用程序
+服务器2	数据库
+--------------------nginx
+docker-compose.yml			
+nginx.conf					*注意文件数量,权限
+--------------------mysql
+docker-compose.yml			mysql节点,初始化脚本
+
+//标签修改
+config-antx.properties		database.url:节点名,端口,数据库
+auto-config.xml				外挂标签,对应文件
+proxool.xml					
+
+mids						节点名,echo
+webconfig.xml				dbType
+--------------------redis
+//文件
+data/redis/dump.rdb
+redisson.yaml	配置session共用
+
+//标签
+datasource/redis.properties	
+config/antx.properties		database.url:节点名,端口,数据库
+META-INF/auto-config.xml
+
+//节点,路径
+docker-compose.yml			mids,redis
+mids						配置,echo
+172.20.10.251:9000
+
+//配置文件
+sso-config-cas.xml
+
+//特殊
+tomcat_version=tomcat8jdk8apache2nginx	tomcat依赖redis			
+--------------------mongo
+webconfig.xml
+
+--------------------ldap
+	
+--------------------外挂文件-----------------------------------------------------
+//格式检查
+是否已经外挂
+文件路径
+空格
+
+//主
+启动文件
+docker-compose.yml		
+	1在管理服务器修改
+	2修改imp1和imp2
+	3空格对齐
+
+//从
+web.xml,antx.properties
+jar,class,jsp
+
+//共享目录
+
+--------------------tomcat内修改-----------------------------------------------------
+
+--------------------重启容器-----------------------------------------------------
+docker stack rm sudy_imp
+./imp deploy sudy_imp
+//进入容器重启nginx
+/opt/sudytech/nginx/sbin/nginx -s reload
+
+--------------------主要配置文件-----------------------------------------------------	
+//*docker-compose.yml			
+节点相关:节点名称,端口					
+路径对应:路径对应,外挂文件
+//dockerfile
+ARG mids_version,ARG tomcat_version,ARG sudy_registry
+COPY --from=mids
+COPY start.sh
+//source/dockfile
+COPY source/file/ /opt/sudytech/
+//mids	
+镜像仓库
+版本,节点配置
+echo推送
+//start.sh
+tomcat启动文件
+
+//打包进镜像中的文件
+
+
+--------------------docker目录结构,需要修改的-----------------------------------------------------	
+config
+	//antx.properties 		*三个文件中的标签要一致
+	web.xml,webconfig.xml,proxool,proxool-ora,redis.properties
+	atuo-config
+	antx.properties		
+data 集群服务器1			外挂文件
+	->相同部分
+	backup	 				备份
+	javadump 				内存溢出
+	logs	 				日志
+		tomcat-logs		
+		//ucp
+	->不同部分
+	_upload
+	mongo
+	mysql
+		//config			mysql配置
+		data				产生的数据
+		dump			
+		//init				数据库初始化,建库导入sql脚本
+	nginx	
+		//config
+		logs
+	redis
+	//ROOT
+		_upload
+		WEB-INF
+		favicon.ico 		浏览器标签页图
+	//redisson.yaml			singleServerConfig
+data2 服务器2
+
+//source					项目
+	/file/root
+		_res
+		META-INF
+			//autoconfig	外挂标签,1autoconfig目录下只保留auto-config.xml一个文件,2不要加无关的属性只给name或required
+		WEB-INF
+			//web.xml
+			//webconfig.xml	修改并配置标签
+			class
+				//proxool.xml
+				//proxool-ora.xml
+				datasource
+					//redis.propertiess
+
+	//Dockerfile
+	
+//docker-compose.yml		启动容器文件,镜像名称端口外挂目录...
+//Dockerfile
+//mids						版本,仓库,环境
+start.sh					tomcat启动程序
+--------------------镜像制作原理-----------------------------------------------------	
+//镜像与容器
+应用程序->放到tomcat webapps下->tomcat启动程序 start.sh
+打包后放到镜像仓库
+容器->拉取镜像到本地
+--------------------docker命令
+//提交镜像
+docker push registry.sudytech.com:35000/idsplus-b/imp:V2.0.0B4
+	
+//下载镜像
+docker login registry.sudytech.com:35000	Lguo/Lguo#123
+docker pull registry.sudytech.com:35000/idsplus-b/imp:V2.0.0B4
+		
+//导出oracle数据	
+expdp sudy_imp/sudy_imp@orcl  schemas=sudy_imp dumpfile=ids-2.0.oracle.dmp directory=DATA_PUMP_DIR;
+cp /opt/oracle/admin/orcl/dpdump/ids-2.0.oracle.dmp /opt/dbdata/local/	
+//导入oracle数据	
+cp /opt/dbdata/local/ids-2.0.oracle.dmp /opt/oracle/admin/orcl/dpdump/
+impdp sudy_imp/sudy_imp DIRECTORY=DATA_PUMP_DIR DUMPFILE=ids-2.0.oracle.dmp REMAP_SCHEMA=sudy_imp:sudy_imp
+		
+redis-cli -a sudy12344
+mysql -uroot -pSudy.web123
+
+//重启nginx
+/opt/sudytech/nginx/sbin/nginx -s reload
+
+
+
+		

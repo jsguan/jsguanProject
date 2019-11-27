@@ -1,0 +1,27 @@
+----------------------ldap配置修改路径
+//修改配置
+修改imp_default/data/ldap/conf/slapd.conf
+	/usr/local/openldap/etc/openldap/
+	
+修改imp_default/data/ldap/init/init.ldif
+	/opt/ldif/	
+
+修改schema属性配置
+	/usr/local/openldap/etc/openldap/schema
+	
+/usr/local/openldap/var/openldap-data/	
+
+----------------------ldap常用命令
+//导入ldap初始化数据
+docker ps
+docker exec -it 容器ID /bin/bash
+cd /usr/local/openldap/bin/
+./ldapadd -x -D "管理员账号" -w 管理员密码 -f /opt/ldif/init.ldif
+
+//重启
+ps -Af|grep ldap
+kill -INT 进程号					(/usr/local/openldap/libexec/slapd所在的进程号)
+/usr/local/openldap/start.sh		(非docker版启动:./openldap/libexec/slapd)
+
+
+
