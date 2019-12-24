@@ -1,0 +1,16 @@
+
+//oracle连接 
+ public Connection getSrcConnection() throws Exception {
+        String username = "USR_SDYKT";
+        String password = "sdykt0527";
+        String driver = "oracle.jdbc.driver.OracleDriver";
+        //String url = "jdbc:oracle:thin:@202.121.127.221:1521:urpdb";
+        String url = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(port=1521)(host=202.121.127.221)(PORT = 1521))(connect_data=(SERVER = DEDICATED)(service_name=urpdb)))";
+        Class.forName(driver);
+        Connection conn = DriverManager.getConnection(url, username, password);
+        return conn;
+    }
+	
+	注意oracle的url写法
+	jdbc:oracle:thin:@(description=(address=(protocol=tcp)(port=1521)(host=202.121.127.221)(PORT = 1521))(connect_data=(SERVER = DEDICATED)(service_name=urpdb)))
+	其中service_name表示服务名，如果是sid的话请更改为sid_name即可亲测可用
