@@ -15,6 +15,10 @@ cd /usr/local/mysql/bin
 mysqldump -u 用户名 -p 数据库名 > 保存文件.sql  
 会提示输入密码，输入完成后会在相应的目录下看到sql文件
 
+mysql中查询最大连接数
+进入docker容器使用命令 mysql -uroot -p 回车输入密码 然后输入命令  show variables like '%max_connection%'; 查看最大连接数
+
+
 3.docker容器利用mysql脚本导入sql文件
 mysql -u username -p -D mydatabase(哪个数据库) < mydata_mytable.sql
 输入密码等待导入完成
