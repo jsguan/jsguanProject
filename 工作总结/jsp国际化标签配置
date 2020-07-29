@@ -1,0 +1,37 @@
+1、在spring-mvc配置如下：
+
+	<!-- 国际化配置，国际化资源文件 -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:language/global</value>
+                <value>classpath:passwordRecovery/passRecovery</value> 
+            </list>
+        </property>
+        <property name="useCodeAsDefaultMessage" value="true" />
+    </bean>
+    <!-- 存储区域设置信息 -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" >
+        <property name="defaultLocale" value="zh_CN"/>
+    </bean>
+    <!--<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/>-->
+    <!--拦截器配置-->
+    <mvc:interceptors>
+        <!-- <mvc:interceptor> -->
+        <!-- <mvc:mapping path="/**" /> -->
+        <!-- <bean class="com.***"></bean> -->
+        <!-- </mvc:interceptor> -->
+        <!--国际化-->
+        <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="request_locale" />
+        </bean>
+    </mvc:interceptors>
+	
+	注意：classpath中的值代表读取的文件夹中的内容
+		  <property name="defaultLocale" value="zh_CN"/>标签中的值是默认读取zh_CN的文件
+		  
+2、在classes文件夹下新建 passwordRecovery/passRecovery_zh_CN.property文件
+
+3、在jsp中引入<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+	引入标签写法<title><spring:message code="screen.welcome.html.title" /></title>
+				<spring:message code="screen.welcome.html.title" />这个标签就是引入国际化，code的值就是标签里设置的
