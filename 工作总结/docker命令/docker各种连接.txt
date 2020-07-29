@@ -1,0 +1,44 @@
+1.关于docker里mysql的连接命令
+查询docker容器 docker ps
+进去相应的docker :docker exec -it docker的id /bin/bash
+连接mysql：mysql -u 用户名 -p Enter键  输入密码
+查看数据库 show databases;
+进入数据库: use database(数据库名)
+查看数据库的表:show tables;
+2.关于docker里mysql copy脚本命令
+执行命令
+whereis mysql
+
+找到mysql的运行路径，我这里是：/usr/local/mysql/bin，用cd进入
+cd /usr/local/mysql/bin
+
+mysqldump -u 用户名 -p 数据库名 > 保存文件.sql  导出所有数据
+
+mysqldump -u 用户名 -p -d 数据库名 > 保存文件.sql  只倒出表结构
+会提示输入密码，输入完成后会在相应的目录下看到sql文件
+
+3.docker容器利用mysql脚本导入sql文件
+mysql -u username -p -D mydatabase(哪个数据库) < mydata_mytable.sql
+输入密码等待导入完成
+
+
+4.关于docker里redis连接以及清除缓存的命令
+查询docker容器 docker ps
+进入redis的docker容器 docker exec -it docker的id /bin/bash
+连接redis  redis-cli -a 12344(密码)
+清除缓存:flushall
+
+linux关闭防火墙命令  service iptables stop
+
+
+5.//日志文件过大
+https://blog.csdn.net/u011487593/article/details/52287991/
+1、查看最后1000行的数据
+cat filename | tail -n 1000
+2、查看1000到3000行的数据
+cat filename | head -n 3000 | tail -n +1000
+
+3、复制最后2000行到文件
+tail -20000 catalina.out >testlog.txt
+
+head -10000 testlog.txt >testlog1.txt
