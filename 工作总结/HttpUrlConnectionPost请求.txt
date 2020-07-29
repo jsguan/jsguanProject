@@ -1,0 +1,43 @@
+ BufferedReader reader = null;
+        OutputStreamWriter writer = null;
+        HttpURLConnection httpRequest = null;
+        try {
+           
+            httpRequest = (HttpURLConnection) new URL(fetch_token).openConnection();
+            httpRequest.setRequestProperty("Content-Type", "application/json");
+            httpRequest.setConnectTimeout(15000);
+            httpRequest.setReadTimeout(20000);
+            httpRequest.setDoOutput(true);
+            httpRequest.setRequestMethod("POST");
+
+            httpRequest.connect();
+
+
+            //设置body内的参数，put到JSONObject中
+            JSONObject param = new JSONObject();
+            param.put("appid", URLEncoder.encode(appid, "UTF-8"));
+            param.put("secret", URLEncoder.encode(secret, "UTF-8"));
+            writer = new OutputStreamWriter(httpRequest.getOutputStream(), "UTF-8");
+            writer.write(param.toString());
+            writer.flush();
+
+            reader = new BufferedReader(new InputStreamReader(httpRequest.getInputStream(), "UTF-8"));
+            StringBuilder dataInfo = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                dataInfo.append(line);
+            }
+
+            String result = dataInfo.toString();
+            JSONObject jsonObj = JSONObject.parseObject(result);
+            int code = jsonObj.getIntValue("status");
+            if (token_successCode != code) {
+                throw new Exception("获取token失败");
+            }
+
+            return jsonObj.getString("data");
+        } finally {
+            closeIO(reader, "can not close BufferedReader!");
+            closeIO(writer,"can not close OutputStreamWriter!");
+            closeConnection(httpRequest, "can not close HttpURLConnection!");
+        }
